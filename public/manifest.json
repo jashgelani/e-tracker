@@ -1,0 +1,13 @@
+{
+  "name": "Paisa Pilot",
+  "short_name": "Paisa Pilot",
+  "description": "Track expenses, income, goals, budgets and your emergency fund.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#020617",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
