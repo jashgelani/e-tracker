@@ -1,0 +1,12 @@
+{
+  "name": "saas-idea-engine",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Daily AI-run SaaS idea digest built from real demand signals",
+  "scripts": {
+    "start": "node src/run.mjs",
+    "mock": "node src/run.mjs --mock --no-email --no-archive"
+  },
+  "engines": { "node": ">=20" }
+}
