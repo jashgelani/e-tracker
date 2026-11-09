@@ -1,0 +1,41 @@
+name: Daily SaaS ideas
+
+on:
+  schedule:
+    - cron: "30 1 * * *" # 01:30 UTC = 07:00 IST / 02:30 CET. Edit to match your morning.
+  workflow_dispatch: {} # lets you run it by hand from the Actions tab
+
+permissions:
+  contents: write # to commit the daily archive + de-dupe history
+
+concurrency:
+  group: daily-ideas
+  cancel-in-progress: false
+
+jobs:
+  ideas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Generate and email today's ideas
+        working-directory: idea-engine
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+          # Optional extras (leave unset to skip):
+          REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+          REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+          RESEND_FROM: ${{ vars.RESEND_FROM }}
+          CLAUDE_MODEL: ${{ vars.CLAUDE_MODEL }}
+        run: node src/run.mjs
+      - name: Commit archive and history
+        run: |
+          git config user.name "idea-engine[bot]"
+          git config user.email "idea-engine@users.noreply.github.com"
+          git add idea-engine/ideas idea-engine/data
+          git diff --cached --quiet || (git commit -m "chore: daily SaaS ideas $(date -u +%F)" && git push)
